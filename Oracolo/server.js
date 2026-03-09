@@ -16,7 +16,7 @@ const PORT = 3000;
 // Permette al server di leggere dati inviati in formato JSON
 app.use(express.json());
 
-// Permette di servire automaticamente file statici dalla cartella "public" (html, css, immagini)
+// Permette di servire automaticamente file statici dalla cartella "public" 
 app.use(express.static("public"));
  
 // Percorso del file che contiene le domande organizzate per categorie
@@ -63,3 +63,4 @@ app.listen(PORT, () => {
     console.log("Server attivo su http://localhost:" + PORT);
 
 });
+
