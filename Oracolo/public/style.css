@@ -1,0 +1,67 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: linear-gradient(to bottom, #1b1b2f, #000);
+    color: white;
+}
+
+h1 {
+    margin-top: 20px;
+}
+
+/* Categorie */
+.categorie {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    width: 70%;
+    margin: 30px auto;
+}
+
+.box {
+    background: #2e2e4d;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.box:hover {
+    background: #4444aa;
+    transform: scale(1.05);
+}
+
+/* Sfera */
+.sfera-container {
+    margin-top: 40px;
+}
+
+.sfera {
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle at 30% 30%, #555, #000);
+    border-radius: 50%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.risposta {
+    width: 70%;
+    font-weight: bold;
+}
+
+/* Animazione */
+.shake {
+    animation: shake 0.8s;
+}
+
+@keyframes shake {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(10deg); }
+    50% { transform: rotate(-10deg); }
+    75% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+}

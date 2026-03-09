@@ -1,0 +1,74 @@
+<body>
+
+    <h1>🔮 Oracolo Magico 🔮</h1>
+
+    <div class="categorie" id="categorie"></div>
+
+    <div class="sfera-container">
+        <div class="sfera" id="sfera">
+            <div class="risposta" id="risposta">
+                Scegli una categoria
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let categoriaSelezionata = "";
+
+        // Funzione che chiede al server: "Quali categorie posso mostrare?"
+        async function caricaCategorie() {
+            const res = await fetch("./categorie"); // Fa una telefonata al server
+            const categorie = await res.json();     // Riceve la lista delle categorie
+
+            const container = document.getElementById("categorie");
+            container.innerHTML = ""; // Svuota il contenitore
+
+            // Per ogni categoria ricevuta, crea un quadratino cliccabile
+            categorie.forEach(categoria => {
+                const box = document.createElement("div");
+                box.className = "box";
+                box.innerText = categoria;
+                // Quando clicchi il quadratino, seleziona quella categoria e interroga l'oracolo
+                box.onclick = () => selezionaCategoria(categoria);
+                container.appendChild(box);
+            });
+        }
+
+        // Funzione per salvare la scelta dell'utente e attivare l'oracolo
+        function selezionaCategoria(categoria) {
+            categoriaSelezionata = categoria;
+            chiediOracolo();
+        }
+
+        // Funzione che gestisce l'effetto "magico" e chiede la risposta finale
+        async function chiediOracolo() {
+            if (!categoriaSelezionata) return;
+
+            const sfera = document.getElementById("sfera");
+            const rispostaDiv = document.getElementById("risposta");
+
+            rispostaDiv.innerText = "Sto pensando..."; // Crea suspense
+            sfera.classList.add("shake"); // Fa tremare la sfera (effetto visivo)
+
+            // Aspetta un secondo (simulando la riflessione dell'oracolo) 
+            setTimeout(async () => {
+                // Invia la categoria scelta al server
+                const res = await fetch("/oracolo", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        categoria: categoriaSelezionata
+                    })
+                });
+
+                const data = await res.json(); // Riceve la frase profetica
+                rispostaDiv.innerText = data.risposta; // La mostra dentro la sfera
+
+                sfera.classList.remove("shake"); // Ferma il tremolio
+            }, 1000);
+        }
+
+        // Avvia tutto non appena la pagina viene aperta
+        caricaCategorie();
+    </script>
+</body>
