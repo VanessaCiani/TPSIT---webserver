@@ -1,39 +1,65 @@
-const express = require("express"); // Carica uno strumento per creare siti web facilmente
-const fs = require("fs");           // Carica lo strumento per leggere i file (come leggere un libro)
-const path = require("path");       // Strumento per gestire i percorsi delle cartelle
+// Importa la libreria Express che serve per creare il server web
+const express = require("express");
 
+// Importa il modulo File System per leggere e scrivere file
+const fs = require("fs");
+
+// Importa il modulo Path per gestire i percorsi delle cartelle in modo sicuro
+const path = require("path");
+
+// Crea l'applicazione server usando Express
 const app = express();
-const PORT = 3000; // Il "canale" su cui il server ascolta (come una stazione radio)
 
-app.use(express.json()); // Dice al server di capire i messaggi scritti in formato testo (JSON)
-app.use(express.static("public")); // Mostra automaticamente i file (immagini, stili) che sono nella cartella "public"
+// Definisce la porta su cui il server funzionerà
+const PORT = 3000;
+
+// Permette al server di leggere dati inviati in formato JSON
+app.use(express.json());
+
+// Permette di servire automaticamente file statici dalla cartella "public" (html, css, immagini)
+app.use(express.static("public"));
  
-// Percorsi per trovare i nostri "libri" di domande e risposte
+// Percorso del file che contiene le domande organizzate per categorie
 const domandePath = path.join(__dirname, "domande.json");
+
+// Percorso del file che contiene le risposte possibili dell'oracolo
 const rispostePath = path.join(__dirname, "risposte.json");
 
-// Quando il sito chiede "quali categorie ci sono?", il server risponde leggendo i titoli nel file domande.json
+// Endpoint GET che restituisce tutte le categorie disponibili
 app.get("/categorie", (req, res) => {
-    const domande = JSON.parse(fs.readFileSync(domandePath)); // Legge il file delle domande
-    res.json(Object.keys(domande)); // Invia solo i nomi delle categorie (Amore, Fortuna, ecc.)
+
+    // Legge il file delle domande e lo converte da testo JSON a oggetto JavaScript
+    const domande = JSON.parse(fs.readFileSync(domandePath));
+
+    // Invia al client solo i nomi delle categorie presenti nel file
+    res.json(Object.keys(domande));
 });
 
-// Quando l'utente sceglie una categoria, l'oracolo decide la risposta
+// Endpoint POST che genera la risposta dell'oracolo
 app.post("/oracolo", (req, res) => {
-    const categoria = req.body.categoria; // Prende la categoria scelta dall'utente (es. "Amore")
 
-    const risposte = JSON.parse(fs.readFileSync(rispostePath)); // Legge tutte le possibili risposte
-    const lista = risposte[categoria]; // Prende solo la lista di risposte di quella categoria
+    // Recupera dal messaggio ricevuto la categoria scelta dall'utente
+    const categoria = req.body.categoria;
 
-    // Sceglie una risposta a caso dalla lista (come pescare un bigliettino da un cappello)
+    // Legge il file che contiene tutte le possibili risposte
+    const risposte = JSON.parse(fs.readFileSync(rispostePath));
+
+    // Prende solo l'elenco di risposte relativo alla categoria scelta
+    const lista = risposte[categoria];
+
+    // Genera un numero casuale tra 0 e la lunghezza della lista
     const random = Math.floor(Math.random() * lista.length);
 
+    // Invia al client la risposta selezionata casualmente
     res.json({
-        risposta: lista[random] // Invia la risposta scelta al sito
+        risposta: lista[random]
     });
 });
 
-// Avvia il server: da questo momento l'oracolo è "vivo" e in ascolto
+// Avvia il server e lo mette in ascolto sulla porta definita
 app.listen(PORT, () => {
+
+    // Messaggio di conferma mostrato nel terminale quando il server parte
     console.log("Server attivo su http://localhost:" + PORT);
+
 });
