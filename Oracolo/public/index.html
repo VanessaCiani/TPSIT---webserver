@@ -1,81 +1,78 @@
-<!DOCTYPE html>
-<html lang="it">
+<!DOCTYPE html> 
+<html lang="it"> 
 <head>
-    <meta charset="UTF-8">
-    <title>Oracolo Magico</title>
+    <meta charset="UTF-8"> 
+    <title>Oracolo Magico</title> 
 
     <!-- Collegamento al CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
-
-    <h1>🔮 Oracolo Magico 🔮</h1>
-
+<body> 
+    <h1>🔮 Oracolo Magico 🔮</h1> 
     <!-- Contenitore categorie -->
-    <div class="categorie" id="categorie"></div>
+    <div class="categorie" id="categorie"></div> <!-- Div vuoto dove verranno inserite le categorie con JS -->
 
     <!-- Sfera -->
-    <div class="sfera-container">
-        <div class="sfera" id="sfera">
-            <div class="risposta" id="risposta">
-                Scegli una categoria
+    <div class="sfera-container"> <!-- Contenitore della sfera per centrarla e gestirne lo stile -->
+        <div class="sfera" id="sfera"> <!-- Div che rappresenta la sfera magica -->
+            <div class="risposta" id="risposta"> <!-- Div dentro la sfera dove appariranno le risposte -->
+                Scegli una categoria <!-- Testo iniziale della sfera prima di scegliere una categoria -->
             </div>
         </div>
     </div>
 
     <!-- Script JS -->
     <script>
-        let categoriaSelezionata = "";
+        let categoriaSelezionata = ""; // Variabile che conterrà la categoria scelta dall'utente
 
-        async function caricaCategorie() {
-            const res = await fetch("./categorie");
-            const categorie = await res.json();
+        async function caricaCategorie() { // Funzione che carica le categorie dal server
+            const res = await fetch("./categorie"); // Richiesta al file 'categorie' per ottenere i dati in formato JSON
+            const categorie = await res.json(); // Converte la risposta in JSON
 
-            const container = document.getElementById("categorie");
-            container.innerHTML = "";
-
-            categorie.forEach(categoria => {
-                const box = document.createElement("div");
-                box.className = "box";
-                box.innerText = categoria;
-                box.onclick = () => selezionaCategoria(categoria);
-                container.appendChild(box);
+            const container = document.getElementById("categorie"); // Seleziona il div dove inserire le categorie
+            container.innerHTML = ""; // Pulisce il contenitore 
+            categorie.forEach(categoria => { // Ciclo su tutte le categorie ricevute
+                const box = document.createElement("div"); // Crea un nuovo div per ogni categoria
+                box.className = "box"; // Assegna la classe 'box' per applicare lo stile
+                box.innerText = categoria; // Imposta il testo del div come il nome della categoria
+                box.onclick = () => selezionaCategoria(categoria); // Quando si clicca sul box, si chiama la funzione per selezionare la categoria
+                container.appendChild(box); // Aggiunge il box al contenitore
             });
         }
 
-        function selezionaCategoria(categoria) {
-            categoriaSelezionata = categoria;
-            chiediOracolo();
+        function selezionaCategoria(categoria) { // Funzione chiamata quando l'utente clicca su una categoria
+            categoriaSelezionata = categoria; // Salva la categoria scelta nella variabile globale
+            chiediOracolo(); // Chiama la funzione che genera la risposta dell'oracolo
         }
 
-        async function chiediOracolo() {
-            if (!categoriaSelezionata) return;
+        async function chiediOracolo() { // Funzione che contatta il server per avere la risposta
+            if (!categoriaSelezionata) return; // Se non è stata scelta una categoria, esce dalla funzione
 
-            const sfera = document.getElementById("sfera");
-            const rispostaDiv = document.getElementById("risposta");
+            const sfera = document.getElementById("sfera"); // Seleziona il div della sfera
+            const rispostaDiv = document.getElementById("risposta"); // Seleziona il div dove apparirà la risposta
 
-            rispostaDiv.innerText = "Sto pensando...";
-            sfera.classList.add("shake");
+            rispostaDiv.innerText = "Sto pensando..."; // Mostra un messaggio temporaneo mentre si elabora la risposta
+            sfera.classList.add("shake"); // Aggiunge una classe per animare la sfera nel nostro caso la scuote
 
-            setTimeout(async () => {
-                const res = await fetch("/oracolo", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        categoria: categoriaSelezionata
+            setTimeout(async () => { // Aspetta 1 secondo per far vedere l'animazione
+                const res = await fetch("/oracolo", { // Manda una richiesta POST al server per ottenere la risposta dell'oracolo
+                    method: "POST", // Metodo della richiesta
+                    headers: { "Content-Type": "application/json" }, // Specifica che si manda un JSON
+                    body: JSON.stringify({ // Corpo della richiesta, convertito in JSON
+                        categoria: categoriaSelezionata // Invia la categoria scelta
                     })
                 });
 
-                const data = await res.json();
-                rispostaDiv.innerText = data.risposta;
+                const data = await res.json(); // Converte la risposta del server in JSON
+                rispostaDiv.innerText = data.risposta; // Mostra la risposta dell'oracolo nella sfera
 
-                sfera.classList.remove("shake");
-            }, 1000);
+                sfera.classList.remove("shake"); // Rimuove l'animazione dalla sfera
+            }, 1000); // Timeout di 1000 millisecondi (1 secondo)
         }
 
-        caricaCategorie();
+        caricaCategorie(); // Chiama la funzione per caricare le categorie appena la pagina viene caricata
     </script>
 
 </body>
-</html>
+</html> 
