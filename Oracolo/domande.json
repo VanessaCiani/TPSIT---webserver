@@ -1,1 +1,20 @@
-//mancano le domande!. ciani quando puoi caricale sennò il compito non va
+{
+  "amore": [
+    "Mi dici qualcosa sull'amore?"
+  ],
+  "fortuna": [
+    "Mi dici qualcosa sulla fortuna?"
+  ],
+  "destino": [
+    "Mi dici qualcosa sul destino?"
+  ],
+  "futuro": [
+    "Mi dici qualcosa sul futuro?"
+  ],
+  "lavoro": [
+    "Mi dici qualcosa sul lavoro?"
+  ],
+  "amicizia": [
+    "Mi dici qualcosa sul amicizia?"
+  ]
+}
